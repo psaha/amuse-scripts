@@ -12,7 +12,7 @@ from amuse.io import write_set_to_file
 from amuse.community.fi.interface import Fi
 
 # ----------------------- parameters -----------------------
-N       = 10_000            # number of SPH particles
+N       = 50_000            # number of SPH particles
 M_star  = 1.0 | units.MSun
 R_star  = 1.0 | units.RSun
 n_poly  = 1.5               # polytropic index (convective star)
