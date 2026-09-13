@@ -1,0 +1,50 @@
+\documentclass[twocolumn]{emulateapj}
+
+\usepackage{amsmath}
+\usepackage[colorlinks=true,
+linkcolor=blue,
+citecolor=blue,
+urlcolor=cyan]{hyperref}
+
+
+\newcommand{\mias}{$\SI{}{\micro{\rm as}}$}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[2]{\left\lVert#1\right\rVert}
+
+\begin{document}
+	
+	\title{SPH meets SII -- Numerical Hydrodynamic for Close Binary Star System}
+	
+	\author{Km Nitu Rai,$^{1}$ Prasenjit Saha,$^{2}$ and Subrata Sarangi$^{3,4}$}
+	
+	\affiliation{$^{1}$Aryabhatta Research Institute of Observational Sciences, Manora Peak, Nainital 263129, India.}
+	
+	\affiliation{$^{2}$Physik-Institut, University of Zurich,
+		Winterthurerstrasse 190, 8057 Zurich, Switzerland.}
+	
+	\affiliation{$^{3}$School of Applied Sciences, Centurion University of
+		Technology and Management, Odisha-752050, India.}
+	
+	\affiliation{$^4$ Visiting Associate, Inter-University Centre for Astronomy and Astrophysics, Post Bag 4, Ganeshkhind, Pune 411 007, Maharashtra, India.}
+
+\begin{abstract}
+Intensity Interferometry (II) has demonstrated significant potential for high-angular-resolution measurements of stellar objects, as the recent one with VERITAS, which resolved non-spherical structure. However, these studies assume simplified stellar models with static surface brightness, which limits our ability to investigate the effects of realistic stellar structure and shape.
+There is an exciting possibility for modeling binary star systems using Smoothed Particle Hydrodynamics (SPH), which provides a physically motivated description of the stellar density and brightness distributions. In this talk, I will present an example of a well-known close binary system, previously investigated under the assumption of static distribution of brightness. By incorporating SPH simulations to measure visibility on the uv-plane, we can generate more realistic II observables and find their impact on image reconstruction and parameter estimation. These simulations provide an important step toward interpreting future II observations of complex stellar systems with greater physical realism.
+\end{abstract}
+
+\maketitle
+
+
+
+\iffalse
+%%%% The previous version
+The recent resurgence of intensity interferometry through instruments like VERITAS, MAGIC, HESS, and the ASTRI array has opened new pathways for achieving beyond milli-arcsecond-scale imaging of massive and evolved stars, including OB-type, Wolf-Rayet, and pulsating stars in complex stellar systems using optical wavelength. Among these, close binary stars continue to fascinate astronomers due to their dynamic interactions and complex evolutionary pathways. Tidal forces between the components of such systems play a significant role in shaping their physical evolution, influencing stellar rotation, and mass transfer. In this presentation, I will focus on the tidal deformation simulation in massive close binary systems and explore how such stretching impacts the square visibility function on the observational plane. Estimation of these tidal interactions not only informs binary stellar evolution models but also sheds light on the internal dynamics and distorted surface geometries of such stars, contributing to a deeper understanding of stellar astrophysics.
+\fi
+
+\vspace{-5mm}
+\small
+%\bibliographystyle{apsstyle}
+\bibliographystyle{apsrev4-1}
+\bibliography{summary}
+
+\end{document}

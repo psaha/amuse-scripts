@@ -1,0 +1,71 @@
+\usepackage{siunitx,booktabs,xcolor,xspace,multirow,graphicx,lipsum}
+\usepackage[spanish,mexico,es-noindentfirst]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{tikzsymbols}
+\usepackage{subcaption}
+\usepackage{charter}
+\usetheme{Madrid}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{animate}
+\usepackage{transparent}
+
+\usepackage[T1]{fontenc}
+\usepackage[export]{adjustbox}
+\usetikzlibrary{positioning}
+\usefonttheme{serif}
+\DeclareUnicodeCharacter{2212}{\textendash}
+
+\setbeamertemplate{frametitle}{
+	\begin{beamercolorbox}[wd=\paperwidth, ht=0.85cm, sep=0.25cm]{frametitle}
+		\begin{tikzpicture}[remember picture,overlay]
+			\node[anchor=north east] at (current page.north east) {\includegraphics[height=0.65cm]{fig/aries.png}};
+		\end{tikzpicture}
+		\usebeamerfont{frametitle}\bfseries\insertframetitle
+	\end{beamercolorbox}
+}
+\definecolor{lightshadygreen}{RGB}{204, 230, 255}
+\setbeamercovered{transparent}
+\setbeamertemplate{caption}[numbered]
+\setbeamercolor{frametitle}{bg=lightshadygreen,fg=black}
+\setbeamercolor{author in head/foot}{bg=lightshadygreen,fg=blue}
+\setbeamercolor{title in head/foot}{bg=lightshadygreen,fg=blue}
+\setbeamercolor{date in head/foot}{bg=lightshadygreen,fg=blue}
+\setbeamercolor{titlelike}{parent=structure,bg=lightshadygreen,fg=black}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamerfont{section in toc}{series=\bfseries}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{caption name}{fg=black}
+\setbeamerfont{caption name}{series=\bfseries}
+\setbeamerfont{caption}{size=\small}
+\setbeamercolor{bibliography entry author}{fg=black}
+\setbeamercolor{bibliography entry title}{fg=black} 
+\setbeamertemplate{section in toc}{\inserttocsectionnumber.~\inserttocsection\par}
+\setbeamertemplate{subsection in toc}{\hspace{1.5em}\inserttocsectionnumber.\inserttocsubsectionnumber~\inserttocsubsection\par}
+
+% Apply the custom color to the frametitle
+\setbeamercolor{frametitle}{bg=lightshadygreen, fg=black}
+
+\title[\textbf{Talk at Research Campus Waischenfeld}]{\textbf{When SPH meets SII \\ \small{Numerical Hydrodynamics for Close Binary Star Systems}}}
+\author[\textbf{Km Nitu Rai}]{\textbf{\underline{Contributor:}} Prasenjit Saha, Subrata Sarangi and Km Nitu Rai \vspace{0.01cm} \\ 
+	{\scriptsize \underline{\textcolor{blue}{niturai201296@gmail.com}}} \\
+	{\scriptsize \underline{\textbf{\tiny Presenting at}}} \\	
+	{\scriptsize \underline{\textcolor{blue}{Stellar Intensity Interferometry Workshop 2026}}}\\
+	{\scriptsize \underline{\textcolor{blue}{5-9 Oct 2026, Research Campus Waischenfeld (Germany) of the Fraunhofer Society}}}
+}
+
+\date{\vspace{-5cm}\textbf{5th October 2026}}
+
+\renewcommand{\maketitle}{
+	\begin{figure}[!htb]
+		\centering
+		\includegraphics[height=1cm]{fig/UZH.png}\hfill
+		\includegraphics[height=1cm]{fig/CUTM.png}\hfill
+		\includegraphics[height=1cm]{fig/aries.png}
+	\end{figure}
+	\vspace{-1cm}
+	\titlepage
+}
+
