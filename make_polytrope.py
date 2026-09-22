@@ -3,18 +3,18 @@
 Build an n=3/2 polytrope (1 MSun, 1 RSun), relax it in the Fi SPH code,
 and save the relaxed model to disk.
 """
-import numpy as np
-from scipy.integrate import solve_ivp
 
 from amuse.units import units, constants, nbody_system
-from amuse.datamodel import Particles
-from amuse.io import write_set_to_file
 from amuse.community.fi.interface import Fi
+from amuse.io import write_set_to_file
+from scipy.integrate import solve_ivp
+from amuse.datamodel import Particles
+import numpy as np
 
 # ----------------------- parameters -----------------------
-N       = 50_000            # number of SPH particles
-M_star  = 1.0 | units.MSun
-R_star  = 1.0 | units.RSun
+N       = 70_000            # number of SPH particles
+M_star  = 1.5 | units.MSun
+R_star  = 1.5 | units.RSun
 n_poly  = 1.5               # polytropic index (convective star)
 gamma   = 1.0 + 1.0/n_poly  # = 5/3
 
@@ -118,5 +118,5 @@ from_code.copy()
 sph.stop()
 
 # ------------- 5. Save ---------------------------------------
-write_set_to_file(parts, "polytrope_relaxed.amuse", "amuse", overwrite_file=True)
+write_set_to_file(parts, "polytrope_relaxed_2.amuse", "amuse", overwrite_file=True)
 print("Saved relaxed model to polytrope_relaxed.amuse")
