@@ -44,10 +44,10 @@ import matplotlib.pyplot as plt
 # USER PARAMETERS
 # ============================================================
 
-INPUT_FILE = "visible_surface_particles.csv"
+INPUT_FILE = "visible_surface_particles_binary.csv"
 
-OUTPUT_VISIBILITY = "visibility_amplitude.png"
-OUTPUT_POWER = "visibility_power.png"
+OUTPUT_VISIBILITY = "visibility_amplitude_binary.png"
+OUTPUT_POWER = "visibility_power_binary.png"
 
 # ------------------------------------------------------------
 # Fourier-plane resolution

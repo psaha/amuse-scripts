@@ -35,8 +35,8 @@ import matplotlib.pyplot as plt
 # USER PARAMETERS
 # ============================================================
 
-INPUT_FILE = "visible_surface_particles.csv"
-OUTPUT_FILE = "stellar_surface.png"
+INPUT_FILE = "visible_surface_particles_binary.csv"
+OUTPUT_FILE = "stellar_surface_binary.png"
 
 # Number of image pixels in each direction.
 IMAGE_SIZE = 800

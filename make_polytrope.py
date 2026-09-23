@@ -12,9 +12,9 @@ from amuse.datamodel import Particles
 import numpy as np
 
 # ----------------------- parameters -----------------------
-N       = 70_000            # number of SPH particles
-M_star  = 1.5 | units.MSun
-R_star  = 1.5 | units.RSun
+N       = 50_000            # number of SPH particles
+M_star  = 1 | units.MSun
+R_star  = 1 | units.RSun
 n_poly  = 1.5               # polytropic index (convective star)
 gamma   = 1.0 + 1.0/n_poly  # = 5/3
 

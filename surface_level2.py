@@ -31,8 +31,8 @@ from amuse.units import units
 # USER PARAMETERS
 # ============================================================
 
-INPUT_FILE = "polytrope_relaxed.amuse"
-OUTPUT_FILE = "visible_surface_particles.csv"
+INPUT_FILE = "binary.amuse"
+OUTPUT_FILE = "visible_surface_particles_binary.csv"
 
 # Minimum visibility for a particle to be retained.
 # 0.01 means particles with less than 1% estimated visibility

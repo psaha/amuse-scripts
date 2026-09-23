@@ -10,7 +10,7 @@ from amuse.io import read_set_from_file
 from amuse.units import units
 
 # ---------------- load ----------------
-parts = read_set_from_file("polytrope_relaxed.amuse", "amuse")
+parts = read_set_from_file("binary.amuse", "amuse")
 N = len(parts)
 
 pos = parts.position.value_in(units.RSun)      # (N,3)

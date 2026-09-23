@@ -24,7 +24,7 @@ k_B     = 1.3807e-16
 sigma_sb= 5.6704e-5
 
 # ------------------ load ------------------
-parts = read_set_from_file("polytrope_relaxed.amuse", "amuse")
+parts = read_set_from_file("binary.amuse", "amuse")
 N   = len(parts)
 pos = parts.position.value_in(units.RSun)
 m   = parts.mass.value_in(units.MSun) * MSun_g          # g
