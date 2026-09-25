@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-"""
-Build an n=3/2 polytrope (1 MSun, 1 RSun), relax it in the Fi SPH code,
-and save the relaxed model to disk.
-"""
-
 from amuse.units import units, constants, nbody_system
 from amuse.community.fi.interface import Fi
 from amuse.io import write_set_to_file
@@ -11,14 +5,18 @@ from scipy.integrate import solve_ivp
 from amuse.datamodel import Particles
 import numpy as np
 
-# ----------------------- parameters -----------------------
-N       = 50_000            # number of SPH particles
-M_star  = 1 | units.MSun
-R_star  = 1 | units.RSun
-n_poly  = 1.5               # polytropic index (convective star)
-gamma   = 1.0 + 1.0/n_poly  # = 5/3
-
+"""
+Build an n=3/2 polytrope (1 MSun, 1 RSun), relax it in the Fi SPH code,
+and save the relaxed model to disk.
+"""
 np.random.seed(42)
+
+# ----------------------- parameters -----------------------
+N       = 50_000                                           # number of SPH particles
+M_star  = 1.25 | units.MSun
+R_star  = 1.25 | units.RSun
+n_poly  = 1.5                                              # polytropic index (convective star)
+gamma   = 1.0 + 1.0/n_poly                                 # = 5/3
 
 # ----------------- 1. Solve Lane-Emden ---------------------
 def rhs(xi, y):
@@ -26,7 +24,7 @@ def rhs(xi, y):
     th = max(theta, 0.0)
     return [dtheta, -th**n_poly - 2.0*dtheta/xi]
 
-def surface(xi, y):          # event: theta = 0
+def surface(xi, y):                                        # event: theta = 0
     return y[0]
 surface.terminal = True
 surface.direction = -1
@@ -38,8 +36,8 @@ sol = solve_ivp(rhs, [xi0, 20.0],
                 events=surface, rtol=1e-10, atol=1e-12,
                 dense_output=True)
 
-xi1      = sol.t_events[0][0]          # surface: ~3.6538 for n=1.5
-dtheta1  = sol.sol(xi1)[1]             # theta'(xi1): ~ -0.2033
+xi1      = sol.t_events[0][0]                              # surface: ~3.6538 for n=1.5
+dtheta1  = sol.sol(xi1)[1]                                 # theta'(xi1): ~ -0.2033
 print(f"Lane-Emden solved: xi1 = {xi1:.5f}, theta'(xi1) = {dtheta1:.5f}")
 
 # fine grid of the solution
@@ -48,21 +46,19 @@ th  = np.clip(sol.sol(xi)[0], 0.0, None)
 dth = sol.sol(xi)[1]
 
 # ------------- 2. Physical scaling -------------------------
-# rho_c = M xi1 / (4 pi R^3 |theta'(xi1)|)
 rho_c = M_star*xi1 / (4.0*np.pi*R_star**3*abs(dtheta1))
-alpha = R_star/xi1                                  # length scale a
+alpha = R_star/xi1                                         # length scale a
 K     = 4.0*np.pi*constants.G*alpha**2*rho_c**(1.0-1.0/n_poly)/(n_poly+1.0)
 print("Central density:", rho_c.value_in(units.g/units.cm**3), "g/cm^3")
 
 # ------------- 3. Sample SPH particles ----------------------
-# cumulative mass fraction q(xi) = -xi^2 theta' / (xi1^2 |theta'(xi1)|)
-q = (-xi**2*dth) / (xi1**2*abs(dtheta1))
+q = (-xi**2*dth) / (xi1**2*abs(dtheta1))                   # cumulative mass fraction
 q[0], q[-1] = 0.0, 1.0
-q = np.maximum.accumulate(q)          # enforce monotonicity
+q = np.maximum.accumulate(q)                               # enforce monotonicity
 
 u_rand = np.random.random(N)
-xi_p   = np.interp(u_rand, q, xi)     # invert the mass profile
-r_p    = (xi_p/xi1)                   # radius in units of R_star
+xi_p   = np.interp(u_rand, q, xi)                          # invert the mass profile
+r_p    = (xi_p/xi1)                                        # radius in units of R_star
 
 # isotropic angles
 mu  = np.random.uniform(-1, 1, N)
@@ -104,7 +100,7 @@ damping  = 0.5
 
 for i in range(1, n_steps+1):
     sph.evolve_model(i*t_relax/n_steps)
-    from_code.copy()                      # pull v, rho, etc. from code
+    from_code.copy()                                       # pull v, rho, etc. from code
     Ekin = parts.kinetic_energy()
     # damp velocities
     parts.vx *= damping
@@ -118,5 +114,6 @@ from_code.copy()
 sph.stop()
 
 # ------------- 5. Save ---------------------------------------
-write_set_to_file(parts, "polytrope_relaxed_2.amuse", "amuse", overwrite_file=True)
+write_set_to_file(parts, "amuse_file/polytrope_single_star_1.amuse", "amuse", overwrite_file=True)
 print("Saved relaxed model to polytrope_relaxed.amuse")
+

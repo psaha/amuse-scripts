@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+from amuse.io import read_set_from_file
+from scipy.spatial import cKDTree
+import matplotlib.pyplot as plt
+from amuse.units import units
+import numpy as np
+
 """
 Ray-traced (line-of-sight integrated) brightness map of the SPH star.
 Optically thin emissivity j ∝ rho^2, integrated along z.
 """
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.spatial import cKDTree
-from amuse.io import read_set_from_file
-from amuse.units import units
 
 # ---------------- load ----------------
-parts = read_set_from_file("binary.amuse", "amuse")
+parts = read_set_from_file("amuse_file/binary_polytrope.amuse", "amuse")
 N = len(parts)
 
 pos = parts.position.value_in(units.RSun)      # (N,3)
@@ -26,7 +26,7 @@ rho = m * k / (4.0/3.0*np.pi*dists[:, -1]**3)  # simple k-NN density, MSun/RSun^
 print(f"N={N},  <h>={h.mean():.3f} RSun,  rho_c~{rho.max():.2f} MSun/RSun^3")
 
 # ---------------- image grid ----------------
-L    = 1.4                                     # half-size of image [RSun]
+L    = 5                                       # half-size of image [RSun]
 npix = 400
 edges  = np.linspace(-L, L, npix+1)
 centers = 0.5*(edges[:-1] + edges[1:])
@@ -54,7 +54,7 @@ for i in range(N):
 image /= dx*dx                                 # per unit area -> surface brightness
 
 # ---------------- plots ----------------
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,5))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,6))
 
 im = ax1.imshow(image, origin='lower', extent=[-L,L,-L,L],
                 cmap='inferno',
@@ -76,6 +76,6 @@ ax2.set_ylabel('mean surface brightness')
 ax2.set_title('Brightness profile')
 
 plt.tight_layout()
-plt.savefig('brightness_map.png', dpi=130)
+plt.savefig('plot/brightness_map.png', dpi=130)
 print("Wrote brightness_map.png")
 plt.show()

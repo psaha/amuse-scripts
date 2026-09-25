@@ -1,8 +1,8 @@
 from amuse.io import read_set_from_file
 
-stars = read_set_from_file("polytrope_relaxed.amuse", "amuse")
+stars = read_set_from_file("amuse_file/binary_polytrope.amuse", "amuse")
 
-#print(stars)
+print(stars)
 #print()
 #print("x:", stars.x)
 #print("y:", stars.y)

@@ -1,20 +1,20 @@
-#!/usr/bin/env python
+from amuse.io import read_set_from_file
+from scipy.spatial import cKDTree
+import matplotlib.pyplot as plt
+from amuse.units import units
+import numpy as np
+
 """
 Absorption-aware ray marching through the SPH star.
 Grey opacity, blackbody source function:  I = int S exp(-tau) kappa rho dz
 Observer looks along -z (image is the xy plane).
 """
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.spatial import cKDTree
-from amuse.io import read_set_from_file
-from amuse.units import units
 
 # ------------------ knobs ------------------
-kappa   = 0.4          # grey opacity [cm^2/g]  (~electron scattering)
-ngrid   = 256          # 3D grid cells per axis
-L       = 1.5          # half-size of box [RSun]
-mu_mol  = 0.6          # mean molecular weight (ionized, solar-ish)
+kappa   = 0.4                                          # grey opacity [cm^2/g]  (~electron scattering)
+ngrid   = 256                                          # 3D grid cells per axis
+L       = 5                                            # half-size of box [RSun]
+mu_mol  = 0.6                                          # mean molecular weight (ionized, solar-ish)
 
 # ------------------ constants (cgs) ------------------
 RSun_cm = 6.957e10
@@ -24,7 +24,7 @@ k_B     = 1.3807e-16
 sigma_sb= 5.6704e-5
 
 # ------------------ load ------------------
-parts = read_set_from_file("binary.amuse", "amuse")
+parts = read_set_from_file("amuse_file/binary_polytrope.amuse", "amuse")
 N   = len(parts)
 pos = parts.position.value_in(units.RSun)
 m   = parts.mass.value_in(units.MSun) * MSun_g          # g
@@ -86,12 +86,10 @@ T_b = (np.pi*np.maximum(image, 0)/sigma_sb)**0.25
 
 # ------------------ plots ------------------
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
-
 im1 = ax1.imshow(T_b.T, origin='lower', extent=[-L, L, -L, L], cmap='afmhot')
 ax1.set_xlabel('x [RSun]'); ax1.set_ylabel('y [RSun]')
 ax1.set_title('Brightness temperature [K]')
 fig.colorbar(im1, ax=ax1)
-
 X, Y = np.meshgrid(centers, centers, indexing='ij')
 R = np.sqrt(X**2 + Y**2).ravel()
 B = image.ravel()
@@ -102,8 +100,7 @@ ax2.set_xlabel('projected radius [RSun]')
 ax2.set_ylabel('I / I_max')
 ax2.set_title('Normalized brightness profile')
 ax2.set_ylim(0, 1.05)
-
 plt.tight_layout()
-plt.savefig('raytrace_map.png', dpi=130)
+plt.savefig('plot/raytrace_map.png', dpi=130)
 print("Wrote raytrace_map.png")
 plt.show()
