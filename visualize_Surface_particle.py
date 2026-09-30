@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # USER PARAMETERS
-INPUT_FILE = "amuse_file/visible_surface_particles_binary.csv"
-OUTPUT_FILE = "plot/stellar_surface_binary.png"
+INPUT_FILE = "amuse_file/visible_surface_particles_single.csv"
+OUTPUT_FILE = "plot/stellar_surface_single.png"
 IMAGE_SIZE = 1024                                    # Number of image pixels in each direction.
 KERNEL_RADIUS = 2.5                                  # Number of smoothing lengths used for the Gaussian footprint.
 GAUSSIAN_WIDTH = 0.5                                 # Controls the width of the Gaussian.

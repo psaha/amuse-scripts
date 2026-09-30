@@ -12,7 +12,7 @@ and save the relaxed model to disk.
 np.random.seed(42)
 
 # ----------------------- parameters -----------------------
-N       = 50_000                                           # number of SPH particles
+N       = 70_000                                           # number of SPH particles
 M_star  = 1.25 | units.MSun
 R_star  = 1.25 | units.RSun
 n_poly  = 1.5                                              # polytropic index (convective star)
@@ -114,6 +114,6 @@ from_code.copy()
 sph.stop()
 
 # ------------- 5. Save ---------------------------------------
-write_set_to_file(parts, "amuse_file/polytrope_single_star_1.amuse", "amuse", overwrite_file=True)
+write_set_to_file(parts, "amuse_file/polytrope_single_star.amuse", "amuse", overwrite_file=True)
 print("Saved relaxed model to polytrope_relaxed.amuse")
 

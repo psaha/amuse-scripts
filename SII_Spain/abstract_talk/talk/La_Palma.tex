@@ -35,7 +35,50 @@
 		\end{tikzpicture}
 	\end{frame}
 
-    \begin{frame}
+    \begin{frame}{From Point to Extended Source}
+    	\begin{columns}[c]
+    		\column{0.65\textwidth}
+    		\begin{itemize}
+    			\item A Star is made with particles - \textbf{Fluid Nature}.
+    			\item Each particle carry a mass in a volume - \textbf{Density}.
+    			\item Polytropic equation of state - \textbf{pressure}.
+    			\begin{equation*}
+    				P = 
+    			\end{equation*}
+    		\end{itemize}
+    		\column{0.35\textwidth}
+    		\begin{figure}
+    			\includegraphics[width=\textwidth]{fig/stellar_surface_single.png}
+    		\end{figure}
+    	\end{columns}
+    \end{frame}
+
+    \begin{frame}{Smoothing Kernal - SPH}
+    	\begin{columns}[c]
+    		\column{0.65\textwidth}
+    		\begin{itemize}
+    			\item Smoothed Particle Hydrodynamics (SPH) - \textbf{Smoothing length of Kernel}.
+    			\item Gaussian smoothing Kernel
+    			\begin{equation*}
+    				W(r, h) = \frac{1}{h^3 \pi^{3/2}} exp\left(\frac{-||r||^2}{h^2}\right) 
+    			\end{equation*}
+    		\end{itemize}
+    		\column{0.35\textwidth}
+    		\begin{figure}
+    			\includegraphics[width=\textwidth]{fig/Gauss_Kernal.jpg}
+    		\end{figure}
+    	\end{columns}
+    \end{frame}
+
+    \begin{frame}{Evolution of Particle}
+	      Using Leap-Frog Method
+    \end{frame}
+
+    \begin{frame}{The Balance in Force}
+    	Contribution of forces for accelaration
+    \end{frame}
+
+    \begin{frame}{The Binary Nature}
     	\centering
     	\begin{columns}[c]
     		\column{0.5\textwidth}
@@ -65,12 +108,8 @@
     	\includegraphics[width=0.5\linewidth]{fig/visibility_power_binary.png}
     \end{frame}
 
-    \begin{frame}{Smoothed Hydrodynamics Particle}
-    	Everything depends on Kernal which is smoothed Gaussian
-    \end{frame}
-
-    \begin{frame}{Evolution of Particle}
-    	Using Leap-Frog Method
+    \begin{frame}{A Contact Binary}
+    	content...
     \end{frame}
 
 	\begin{frame}{}

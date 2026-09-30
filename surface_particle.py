@@ -3,8 +3,8 @@ from amuse.units import units
 import numpy as np
 
 # USER PARAMETERS
-INPUT_FILE = "amuse_file/binary_polytrope.amuse"
-OUTPUT_FILE = "amuse_file/visible_surface_particles_binary.csv"
+INPUT_FILE = "amuse_file/polytrope_single_star.amuse"
+OUTPUT_FILE = "amuse_file/visible_surface_particles_single.csv"
 VISIBILITY_MIN = 0.0001         # Minimum visibility for a particle to be retained. 0.01 means particles with less than 1% estimated visibility are discarded.
 KERNEL_RADIUS_FACTOR = 1.0
 N_NEIGHBOURS = 64
