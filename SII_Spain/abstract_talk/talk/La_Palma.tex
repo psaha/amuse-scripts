@@ -18,7 +18,7 @@
 		
 		{\Large
 			\textcolor{blue}{\textit{No more privileges.}}\\[0.25cm]
-			\textcolor{blue}{\textit{No more idealized point sources.}}
+			\textcolor{blue}{\textit{No more idealized uniform stellar disk.}}
 		}\\[0.8cm]
 		
 		\rule{0.55\textwidth}{1pt}\\[0.5cm]
@@ -39,45 +39,117 @@
     	\begin{columns}[c]
     		\column{0.65\textwidth}
     		\begin{itemize}
-    			\item A Star is made with particles - \textbf{Fluid Nature}.
-    			\item Each particle carry a mass in a volume - \textbf{Density}.
-    			\item Polytropic equation of state - \textbf{pressure}.
-    			\begin{equation*}
-    				P = 
-    			\end{equation*}
-    		\end{itemize}
+    			\item A star is a collection of particles - \textbf{FLUID}.    			
+    			\item Particle's mass in a volume - \textbf{DENSITY}    			
+    			\item Density determines the \textbf{pressure} through
+    			the polytropic equation of state
+    			\[
+    			P = K\rho^\gamma.
+    			\]    			
+    			\item It forms a \textbf{finite, spatially extended source}
+    			rather than a point source.
+    		\end{itemize}    		
     		\column{0.35\textwidth}
     		\begin{figure}
+    			\centering
     			\includegraphics[width=\textwidth]{fig/stellar_surface_single.png}
+    			\caption*{\small Extended stellar surface - \textcolor{red}{make it movie}}
     		\end{figure}
     	\end{columns}
     \end{frame}
 
-    \begin{frame}{Smoothing Kernal - SPH}
+    \begin{frame}
+     	\centering
+	    \vfill	
+	    {\Large\textbf{How Do We Study an Extended Source and Signal?}}	
+	    \textbf{\textcolor{blue}{THE PARTICLES}}	
+	    
+	    \vspace{0.5cm}	
+	    {\color{blue}\rule{0.25\textwidth}{1.5pt}}    
+	    \hspace{0.15cm}
+	    {\color{red}\textbf{\Large Smoothed Particle Hydrodynamics}}
+	    
+	    \hspace{0.15cm}
+	    {\color{blue}\rule{0.25\textwidth}{1.5pt}}	
+    	\vfill
+    \end{frame}
+
+    \begin{frame}{Local Neighbourhood}
     	\begin{columns}[c]
-    		\column{0.65\textwidth}
+    		\column{0.65\textwidth}    		
     		\begin{itemize}
-    			\item Smoothed Particle Hydrodynamics (SPH) - \textbf{Smoothing length of Kernel}.
-    			\item Gaussian smoothing Kernel
+    			\item Estimate the properties using	\textbf{Local Neighbourhood} of particles.    			
+    			\item \textbf{Smoothing Length} $h$ sets the size of it.   			
+    			\item A kernel distributes the contribution of \textbf{each particle smoothly}:
     			\begin{equation*}
-    				W(r, h) = \frac{1}{h^3 \pi^{3/2}} exp\left(\frac{-||r||^2}{h^2}\right) 
+    				W(r,h)
+    				=
+    				\frac{1}{\pi^{3/2}h^3}
+    				\exp\left(-\frac{r^2}{h^2}\right).
     			\end{equation*}
-    		\end{itemize}
+    			\begin{equation*}
+    				\int W(r,h)\,d^3r = 1.
+    			\end{equation*}
+      		    \item Particles closer to the point of interest contribute
+    		    \textbf{more strongly}.
+    		\end{itemize}   		
     		\column{0.35\textwidth}
     		\begin{figure}
+    			\centering
     			\includegraphics[width=\textwidth]{fig/Gauss_Kernal.jpg}
+    			\caption*{\tiny \textbf{Gaussian smoothing kernel}}
     		\end{figure}
     	\end{columns}
     \end{frame}
 
-    \begin{frame}{Evolution of Particle}
-	      Using Leap-Frog Method
+    \begin{frame}{Evolution of Particle}	
+    	\begin{columns}[c]		
+		    \column{0.6\textwidth}		
+		    \begin{itemize}
+			    \item Particles are evolved using the \textbf{leap-frog method}.			
+		       	\item Velocity is updated by a half-step:
+			    \begin{equation*}
+			    	\mathbf{v}_i^{n+1/2} = 	\mathbf{v}_i^n + \frac{\Delta t}{2}\mathbf{a}_i^n
+			    \end{equation*}			
+		    	\item Position is updated by a full step:
+			    \begin{equation*}
+			    	\mathbf{r}_i^{n+1} = \mathbf{r}_i^n	+ \Delta t\,\mathbf{v}_i^{n+1/2}
+			    \end{equation*}			
+			    \item Acceleration is then recomputed for the next step.
+	    	\end{itemize}		
+		    \column{0.4\textwidth}		
+		    \centering
+		    {\color{blue}\Large\textbf{Leap-Frog}}		
+		    \vspace{0.3cm}		
+		    \begin{tikzpicture}[>=stealth, scale=0.8, every node/.style={font=\small}]			
+		    	\draw[->, thick] (0,0) -- (5,0) node[right] {$t$};			
+			    \fill[red] (0.8,0) circle (3pt);
+	    		\fill[red] (4.2,0) circle (3pt);			
+	    		\node[red, above] at (0.8,0) {$\mathbf r_i^n$};
+    			\node[red, above] at (4.2,0) {$\mathbf r_i^{n+1}$};			
+    			\draw[blue, thick, ->] (2.5,0.2) -- (2.5,1.1);			
+	    		\node[blue, above] at (2.5,1.1)
+	    		{$\mathbf v_i^{n+1/2}$};			
+	    		\draw[red, thick, ->] (1,-0.35) -- (4,-0.35);			
+	    		\node[red, below] at (2.5,-0.35)
+	    		{\scriptsize $\Delta t$};			
+	    	\end{tikzpicture}		
+		    \vspace{0.3cm}
+		
+		    \begin{block}{Key idea}
+		    	\centering
+		    	{\color{red}$\mathbf r$: full steps}
+	    		\qquad
+	    		{\color{blue}$\mathbf v$: half steps}
+	    	\end{block}		
+    	\end{columns}	
     \end{frame}
 
-    \begin{frame}{The Balance in Force}
-    	Contribution of forces for accelaration
+    \begin{frame}{Equilibrium: The Balancing Force}
+    	
     \end{frame}
 
+\iffalse
     \begin{frame}{The Binary Nature}
     	\centering
     	\begin{columns}[c]
@@ -117,5 +189,5 @@
 			{\fontsize{40}{50}\selectfont \underline{Thank You!!}}
 		\end{center}
 	\end{frame}
-
+\fi
 \end{document}
