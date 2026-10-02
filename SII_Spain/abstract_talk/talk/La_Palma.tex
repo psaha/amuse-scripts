@@ -52,11 +52,12 @@
     		\column{0.35\textwidth}
     		\begin{figure}
     			\centering
-    			\includegraphics[width=\textwidth]{fig/stellar_surface_single.png}
-    			\caption*{\small Extended stellar surface - \textcolor{red}{make it movie}}
+    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_single/single_star}{1}{31}
+    			\caption*{\small Extended stellar surface}
     		\end{figure}
     	\end{columns}
     \end{frame}
+
 
     \begin{frame}
      	\centering
@@ -72,6 +73,48 @@
 	    \hspace{0.15cm}
 	    {\color{blue}\rule{0.25\textwidth}{1.5pt}}	
     	\vfill
+    \end{frame}
+
+    \begin{frame}{Equilibrium: The Balancing Force}   	
+    	\begin{columns}[c]    		
+    		\column{0.65\textwidth}    		
+    		\begin{itemize}
+    			\item Equilibrium - \textbf{pressure balances gravity}.    			
+    			\item The pressure gradient provides an outward force:
+    			\[
+    			\mathbf{a}_{P}
+    			=-\frac{1}{\rho}\nabla P
+    			\]    			
+    			\item Gravity provides an inward acceleration:
+    			\[
+    			\mathbf{a}_{G}=-\nabla\Phi
+    			\]   			
+    			\item At equilibrium:
+    			\[
+    			\boxed{\mathbf{a}_{P}+\mathbf{a}_{G}=0}
+    			\]
+    		\end{itemize}    		
+    		\column{0.35\textwidth}    		
+    		\centering
+    		\begin{tikzpicture}[>=stealth, scale=0.85]    			
+    			\shade[ball color=orange!60] (0,0) circle (1.5);
+    			
+    			\draw[->, thick, blue] (0,1.5) -- (0,0.65);
+    			\draw[->, thick, blue] (0,-1.5) -- (0,-0.65);
+    			\draw[->, thick, blue] (1.5,0) -- (0.65,0);
+    			\draw[->, thick, blue] (-1.5,0) -- (-0.65,0);
+    			
+    			\draw[->, thick, red] (0.65,0.2) -- (1.8,0.2);
+    			\draw[->, thick, red] (-0.65,0.2) -- (-1.8,0.2);
+    			\draw[->, thick, red] (0.2,0.65) -- (0.2,1.8);
+    			\draw[->, thick, red] (0.2,-0.65) -- (0.2,-1.8);
+    			
+    			\node[blue] at (0,-2.0) {\scriptsize Gravity};
+    			\node[red] at (2.0,0.45) {\scriptsize Pressure};
+    			
+    			\node at (0,0) {\textbf{Star}};    			
+    		\end{tikzpicture}    		
+    	\end{columns}    	
     \end{frame}
 
     \begin{frame}{Local Neighbourhood}
@@ -145,43 +188,101 @@
     	\end{columns}	
     \end{frame}
 
-    \begin{frame}{Equilibrium: The Balancing Force}
+    \begin{frame}
+    	\centering
+    	\vfill	
+    	{\Large\textbf{Extend the Idea to the Close Binary Star System}}
+    		
+    	\textbf{\textcolor{blue}{THE MODELING PROBLEM OF COMPLEX SYSTEM}}	
+    	
+    	\vspace{0.5cm}	
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}    
+    	\hspace{0.15cm}
+    	{\color{red}\textbf{\Large In Absence of Analytical Equations}}
+    	
+    	\hspace{0.15cm}
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}	
+    	\vfill
+    \end{frame}
+
+    \begin{frame}{Why a Close Binary Star System?}
+    	
+    	\begin{itemize}
+    		\item The gravitational field is no longer spherically symmetric.
+    		
+    		\item The stars can undergo strong tidal interaction.
+    		
+    		\item Their surfaces can become distorted from spherical symmetry.
+    		
+    		\item The observed brightness distribution changes with orbital phase.
+    	\end{itemize}
+    	
+    	\begin{block}{Key Idea}
+    		\centering
+    		A binary system requires the \textbf{dynamics and surface structure}
+    		to be evolved together.
+    	\end{block}
     	
     \end{frame}
 
-\iffalse
-    \begin{frame}{The Binary Nature}
-    	\centering
+    \begin{frame}{Representing the Binary with SPH Particles}   	
+    	\begin{itemize}
+    		\item Each star is represented by a collection of SPH particles, which carries:
+    		\[
+    		m_i,\quad \mathbf r_i,\quad \mathbf v_i,\quad
+    		\rho_i,\quad u_i,\quad h_i
+    		\]
+    		
+    		\item The particles interact through:
+    		\begin{itemize}
+    			\item gravitational force,
+    			\item pressure force,
+    			\item hydrodynamic interactions.
+    		\end{itemize}
+    	\end{itemize}
+    	
+    	\begin{block}{Advantage}
+    		\centering
+    		The stellar surface does not need to be prescribed analytically.
+    	\end{block}    	
+    \end{frame}
+
+    \begin{frame}{Initial Binary Configuration}
     	\begin{columns}[c]
-    		\column{0.5\textwidth}
-    		\includegraphics[width=\linewidth]{fig/binary_3d.png}
-    		\column{0.5\textwidth}
-    		\includegraphics[width=\linewidth]{fig/polytrope_profile}
-    	\end{columns}
+    		\column{0.6\textwidth}
+    		\begin{itemize}
+    			\item Two relaxed polytropic stars in a orbit.
+    			\item Orbital separation is set by the chosen binary parameters.
+    			\item Initial velocities provide the orbital motion.
+    			\item At each time step:
+    			\begin{enumerate}
+    				\item Particle positions are updated.
+    				\item Velocities are updated.
+    				\item Density and pressure are recalculated.
+    				\item Gravitational and hydrodynamic forces are evaluated.
+    			\end{enumerate}
+    		\end{itemize}
+    		
+    		\begin{equation*}
+    			\mathbf a_i =
+    			\mathbf a_{i,\mathrm{grav}}
+    			+
+    			\mathbf a_{i,\mathrm{pressure}}
+    		\end{equation*}
+    		
+    		\column{0.4\textwidth}
+    		\begin{figure}
+    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_binary/binary_star}{1}{71}
+    		\end{figure}
+    	\end{columns}    	
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}{The Projected Surface and Signal}
     	\centering
-    	\includegraphics[width=\linewidth]{fig/brightness_map.png}
-    \end{frame}
-
-    \begin{frame}
-    	\centering
-    	\includegraphics[width=\linewidth]{fig/raytrace_map.png}
-    \end{frame}
-
-    \begin{frame}
-    	\centering
-    	\includegraphics[width=0.5\linewidth]{fig/stellar_surface_binary.png}
-    \end{frame}
-
-    \begin{frame}
-    	\centering
-    	\includegraphics[width=0.5\linewidth]{fig/visibility_power_binary.png}
-    \end{frame}
-
-    \begin{frame}{A Contact Binary}
-    	content...
+    	\begin{figure}
+    		\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_signal_binary/binary_signal}{1}{71}
+    		\caption*{The binary star, its projected surface and signal on earth.}
+    	\end{figure}
     \end{frame}
 
 	\begin{frame}{}
@@ -189,5 +290,5 @@
 			{\fontsize{40}{50}\selectfont \underline{Thank You!!}}
 		\end{center}
 	\end{frame}
-\fi
+
 \end{document}

@@ -14,8 +14,8 @@ FRAME_DIR = "fi_frames"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(FRAME_DIR, exist_ok=True)
 
-N1 = 5000
-N2 = 7000
+N1 = 50000
+N2 = 70000
 
 parts = read_set_from_file(BINARY_FILE, "amuse")
 

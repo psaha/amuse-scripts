@@ -7,13 +7,13 @@ import numpy as np
 
 
 # STAR 1
-N1 = 50_00
+N1 = 50_000
 M1 = 1.0 | units.MSun
 R1 = 1.0 | units.RSun
 n_poly1 = 1.5
 
 # STAR 2
-N2 = 70_00
+N2 = 70_000
 M2 = 1.5 | units.MSun
 R2 = 1.5 | units.RSun
 n_poly2 = 1.5
