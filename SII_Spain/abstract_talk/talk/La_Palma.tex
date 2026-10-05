@@ -53,7 +53,7 @@
     		\begin{figure}
     			\centering
     			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_single/single_star}{1}{31}
-    			\caption*{\small Extended stellar surface}
+    			\caption*{\tiny \textbf{Extended stellar surface}}
     		\end{figure}
     	\end{columns}
     \end{frame}
@@ -96,24 +96,11 @@
     		\end{itemize}    		
     		\column{0.35\textwidth}    		
     		\centering
-    		\begin{tikzpicture}[>=stealth, scale=0.85]    			
-    			\shade[ball color=orange!60] (0,0) circle (1.5);
-    			
-    			\draw[->, thick, blue] (0,1.5) -- (0,0.65);
-    			\draw[->, thick, blue] (0,-1.5) -- (0,-0.65);
-    			\draw[->, thick, blue] (1.5,0) -- (0.65,0);
-    			\draw[->, thick, blue] (-1.5,0) -- (-0.65,0);
-    			
-    			\draw[->, thick, red] (0.65,0.2) -- (1.8,0.2);
-    			\draw[->, thick, red] (-0.65,0.2) -- (-1.8,0.2);
-    			\draw[->, thick, red] (0.2,0.65) -- (0.2,1.8);
-    			\draw[->, thick, red] (0.2,-0.65) -- (0.2,-1.8);
-    			
-    			\node[blue] at (0,-2.0) {\scriptsize Gravity};
-    			\node[red] at (2.0,0.45) {\scriptsize Pressure};
-    			
-    			\node at (0,0) {\textbf{Star}};    			
-    		\end{tikzpicture}    		
+    		\begin{figure}
+    			\centering
+    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_star/frame}{1}{60}
+    			\caption*{\tiny \textbf{Reaching in Equilibrium}}
+    		\end{figure}    		
     	\end{columns}    	
     \end{frame}
 
@@ -121,9 +108,9 @@
     	\begin{columns}[c]
     		\column{0.65\textwidth}    		
     		\begin{itemize}
-    			\item Estimate the properties using	\textbf{Local Neighbourhood} of particles.    			
+    			\item Properties of star using	\textbf{Local Neighbourhood} of particles.    			
     			\item \textbf{Smoothing Length} $h$ sets the size of it.   			
-    			\item A kernel distributes the contribution of \textbf{each particle smoothly}:
+    			\item Kernel distributes the contribution of \textbf{each particle smoothly}:
     			\begin{equation*}
     				W(r,h)
     				=
@@ -145,20 +132,63 @@
     	\end{columns}
     \end{frame}
 
-    \begin{frame}{Evolution of Particle}	
+    \begin{frame}{Density and Acceleration}
+    	\begin{columns}[c]
+    		\column{0.65\textwidth}    		
+    		\begin{itemize}    			
+    			\item \textbf{Density} using the smoothing kernel:    			
+    			\begin{equation*}
+    				\rho_i =
+    				\sum_j m_j\,W(\mathbf{r}_i-\mathbf{r}_j,h).
+    			\end{equation*}    			   			
+    			\item Pressure differences produce the \textbf{pressure acceleration}:    			
+    			\begin{equation*}
+    				\mathbf{a}_{i}^{\,\mathrm{P}}
+    				=
+    				-\sum_j m_j
+    				\left(
+    				\frac{P_i}{\rho_i^2}
+    				+
+    				\frac{P_j}{\rho_j^2}
+    				\right)
+    				\nabla_i W_{ij}.
+    			\end{equation*}    			
+    			\item The \textbf{particle acceleration} is then determined from
+    			the combined forces:    			
+    			\begin{equation*}
+    				\boxed{
+    					\mathbf{a}_i =
+    					\mathbf{a}_{i}^{\,\mathrm{P}}
+    					+
+    					\mathbf{a}_{i}^{\,\mathrm{G}}
+    					-
+    					\nu\mathbf{v}_i
+    				}
+    			\end{equation*}    			
+    		\end{itemize}
+    		\column{0.35\textwidth}   		
+    		\begin{figure}
+    			\centering
+    			\includegraphics[width=\textwidth]{fig/polytrope_profile.png}    			
+    			\caption*{\tiny	\textbf{From local neighbours to Density}}
+    		\end{figure}   		
+    	\end{columns}
+    \end{frame}
+
+    \begin{frame}{Evolution in Acceleration}	
     	\begin{columns}[c]		
 		    \column{0.6\textwidth}		
 		    \begin{itemize}
 			    \item Particles are evolved using the \textbf{leap-frog method}.			
-		       	\item Velocity is updated by a half-step:
+		       	\item \textbf{Velocity} is updated by a half-step:
 			    \begin{equation*}
 			    	\mathbf{v}_i^{n+1/2} = 	\mathbf{v}_i^n + \frac{\Delta t}{2}\mathbf{a}_i^n
 			    \end{equation*}			
-		    	\item Position is updated by a full step:
+		    	\item \textbf{Position} is updated by a full step:
 			    \begin{equation*}
 			    	\mathbf{r}_i^{n+1} = \mathbf{r}_i^n	+ \Delta t\,\mathbf{v}_i^{n+1/2}
 			    \end{equation*}			
-			    \item Acceleration is then recomputed for the next step.
+			    \item \textbf{Acceleration} is then recomputed for the next step.
 	    	\end{itemize}		
 		    \column{0.4\textwidth}		
 		    \centering
@@ -177,8 +207,7 @@
 	    		\node[red, below] at (2.5,-0.35)
 	    		{\scriptsize $\Delta t$};			
 	    	\end{tikzpicture}		
-		    \vspace{0.3cm}
-		
+		    \vspace{0.3cm}		
 		    \begin{block}{Key idea}
 		    	\centering
 		    	{\color{red}$\mathbf r$: full steps}
@@ -189,10 +218,87 @@
     \end{frame}
 
     \begin{frame}
+    	\centering    	
+    	{\Large\textbf{Extend the Idea to the Binary Star System}}    	
+    	\vspace{0.2cm}    
+    		
+    	{\textbf{\textcolor{blue}{STARS ARE BOUND IN AN ORBIT}}}    	
+    	\vspace{0.35cm}   
+    	 	
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}
+    	\hspace{0.15cm}    	
+    	{\color{red}\textbf{\Large Analytical Equations of Signal}}
+    	\hspace{0.15cm}    	
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}    	
+    	\vspace{0.1cm}    	
+    	\begin{equation*}
+    		\mathbf{V(u,v) =
+    		\frac{
+    			I_A V_A(\rho)
+    			+ I_B V_B(\rho)
+    			\exp\left[2\pi i\,(uX+vY)/D\right]
+    		}
+    		{I_A+I_B}}
+    	\end{equation*}    	
+    \end{frame}
+
+    \begin{frame}{Binary System with SPH Particles}   	
+    	\begin{itemize}
+    		\item Each star is represented by a collection of SPH particles, which carries:
+    		\[
+    		m_i,\quad \mathbf r_i,\quad \mathbf v_i,\quad
+    		\rho_i,\quad u_i,\quad h_i
+    		\]   		
+    		\item The particles interact through:
+    		\begin{itemize}
+    			\item gravitational force,
+    			\item pressure force,
+    			\item hydrodynamic interactions.
+    		\end{itemize}
+    	\end{itemize}
+    	
+    	\begin{block}{Advantage}
+    		\centering
+    		The stellar object can be described analytically, while SPH provides a natural representation of the stellar surface and its complex geometry.
+    	\end{block}    	
+    \end{frame}
+
+    \begin{frame}{Initial Binary Configuration}
+    	\begin{columns}[c]
+    		\column{0.65\textwidth}
+    		\begin{itemize}
+    			\item Two relaxed polytropic stars in a \textbf{orbit}.
+    			\item Binary parameters sets the \textbf{Separation}.
+    			\item Initial velocities provide \textbf{orbital motion}.
+    			\item At each time step:
+    			\begin{enumerate}
+    				\item Particle positions are updated.
+    				\item Velocities are updated.
+    				\item Density and pressure are recalculated.
+    				\item Gravitational and hydrodynamic forces are evaluated.
+    			\end{enumerate}
+    		\end{itemize}
+    		
+    		\column{0.35\textwidth}
+    		\begin{figure}
+    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_binary/binary_star}{1}{71}
+    		\end{figure}
+    	\end{columns}    	
+    \end{frame}
+
+    \begin{frame}
+    	\centering
+    	\begin{figure}
+    		\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_signal_binary/binary_signal}{1}{31}
+    		\caption*{\textbf{\textcolor{blue}{The binary star, its projected surface and signal on earth.}}}
+    	\end{figure}
+    \end{frame}
+
+    \begin{frame}
     	\centering
     	\vfill	
     	{\Large\textbf{Extend the Idea to the Close Binary Star System}}
-    		
+    	
     	\textbf{\textcolor{blue}{THE MODELING PROBLEM OF COMPLEX SYSTEM}}	
     	
     	\vspace{0.5cm}	
@@ -208,87 +314,57 @@
     \begin{frame}{Why a Close Binary Star System?}
     	
     	\begin{itemize}
-    		\item The gravitational field is no longer spherically symmetric.
-    		
-    		\item The stars can undergo strong tidal interaction.
-    		
-    		\item Their surfaces can become distorted from spherical symmetry.
-    		
-    		\item The observed brightness distribution changes with orbital phase.
+    		\item The gravitational field is \textbf{no longer spherically symmetric}.    		
+    		\item The stars can undergo \textbf{strong tidal interaction}.    		
+    		\item Their \textbf{surfaces can become distorted} from spherical symmetry.    		
+    		\item The observed \textbf{brightness distribution changes} with orbital phase.
     	\end{itemize}
     	
     	\begin{block}{Key Idea}
     		\centering
-    		A binary system requires the \textbf{dynamics and surface structure}
-    		to be evolved together.
+    		A binary system requires the \textbf{dynamics and surface structure} to be evolved together.
     	\end{block}
-    	
+       	
     \end{frame}
 
-    \begin{frame}{Representing the Binary with SPH Particles}   	
-    	\begin{itemize}
-    		\item Each star is represented by a collection of SPH particles, which carries:
-    		\[
-    		m_i,\quad \mathbf r_i,\quad \mathbf v_i,\quad
-    		\rho_i,\quad u_i,\quad h_i
-    		\]
-    		
-    		\item The particles interact through:
-    		\begin{itemize}
-    			\item gravitational force,
-    			\item pressure force,
-    			\item hydrodynamic interactions.
-    		\end{itemize}
-    	\end{itemize}
-    	
-    	\begin{block}{Advantage}
-    		\centering
-    		The stellar surface does not need to be prescribed analytically.
-    	\end{block}    	
-    \end{frame}
-
-    \begin{frame}{Initial Binary Configuration}
-    	\begin{columns}[c]
-    		\column{0.6\textwidth}
-    		\begin{itemize}
-    			\item Two relaxed polytropic stars in a orbit.
-    			\item Orbital separation is set by the chosen binary parameters.
-    			\item Initial velocities provide the orbital motion.
-    			\item At each time step:
-    			\begin{enumerate}
-    				\item Particle positions are updated.
-    				\item Velocities are updated.
-    				\item Density and pressure are recalculated.
-    				\item Gravitational and hydrodynamic forces are evaluated.
-    			\end{enumerate}
-    		\end{itemize}
-    		
-    		\begin{equation*}
-    			\mathbf a_i =
-    			\mathbf a_{i,\mathrm{grav}}
-    			+
-    			\mathbf a_{i,\mathrm{pressure}}
-    		\end{equation*}
-    		
-    		\column{0.4\textwidth}
-    		\begin{figure}
-    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_binary/binary_star}{1}{71}
-    		\end{figure}
-    	\end{columns}    	
-    \end{frame}
-
-    \begin{frame}{The Projected Surface and Signal}
+    \begin{frame}
     	\centering
     	\begin{figure}
-    		\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_signal_binary/binary_signal}{1}{71}
-    		\caption*{The binary star, its projected surface and signal on earth.}
+    		\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/tidal/tidal}{1}{36}
+    		\caption*{\textbf{\textcolor{blue}{The close binary star, its projected surface and signal on earth.}}}
     	\end{figure}
     \end{frame}
 
-	\begin{frame}{}
-		\begin{center}
-			{\fontsize{40}{50}\selectfont \underline{Thank You!!}}
-		\end{center}
-	\end{frame}
+	\begin{frame}		
+		\begin{center}			
+			\vspace{1.5cm}
+			
+			{\fontsize{34}{40}\selectfont
+				\textcolor{blue!80!black}{\textbf{Thank You!}}
+			}
+			
+			\vspace{0.5cm}
+			
+			{\fontsize{24}{30}\selectfont
+				\textcolor{gray!70!black}{Thanks to the \textcolor{red}{Audience}}
+			}
+			
+			\vspace{0.25cm}
+			
+			{\fontsize{22}{28}\selectfont
+				and \textcolor{teal!70!black}{\textbf{ChatGPT}} too!!}
+			
+			\vspace{0.7cm}
+			
+			\textcolor{orange!80!black}{\rule{7cm}{1.5pt}}
+			
+			\vspace{0.8cm}
+			
+			{\Large
+				\textcolor{blue!70!black}{$\star\quad\star\quad\star$}
+			}
+			
+		\end{center}		
+	\end{frame}	
 
 \end{document}

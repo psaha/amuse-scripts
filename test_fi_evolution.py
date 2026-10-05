@@ -59,7 +59,7 @@ for i,t in enumerate(times):
         y,
         c=np.log10(np.maximum(rho, 1e-20)),
         s=0.4,
-        cmap="gray",
+        cmap="inferno",
         marker="."
     )
 

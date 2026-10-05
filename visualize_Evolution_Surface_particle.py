@@ -1,29 +1,102 @@
 import os
 import glob
 import numpy as np
+
 import matplotlib
 matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
+
 from scipy.spatial import cKDTree
+
 from amuse.io import read_set_from_file
 from amuse.units import units
 
+
+# ============================================================
+# DIRECTORIES
+# ============================================================
+
 SNAPSHOT_DIR = "fi_snapshots"
+
 OUTPUT_DIR = "surface_interferometry"
-
-NPIX = 512
-RMAX = 10.0
-UVMAX = 1.5
-
-SURFACE_RADIUS = 0.5
-
-KERNEL_RADIUS = 2.5
-GAUSSIAN_WIDTH = 0.5
 
 os.makedirs(
     OUTPUT_DIR,
     exist_ok=True
 )
+
+
+# ============================================================
+# PLOT PARAMETERS
+# ============================================================
+
+NPIX = 512
+
+RMAX = 10.0
+
+
+# ============================================================
+# INTERFEROMETER PARAMETERS
+# ============================================================
+
+# Distance to the binary
+#
+# Change this to the actual distance of your system.
+#
+DISTANCE_PC = 80.0
+
+
+# Observing wavelength
+#
+# 550 nm = 5.5e-7 m
+#
+# Change this to your observing wavelength.
+#
+WAVELENGTH = 550e-9
+
+
+# Maximum physical baseline shown in the (u,v) plane
+#
+# The binary separation is several R_sun, so we allow
+# a large baseline range to see the visibility fringes.
+#
+UVMAX_METERS = 1000.0
+
+
+# ============================================================
+# PHYSICAL CONSTANTS
+# ============================================================
+
+RSUN_M = 6.957e8
+
+PC_M = 3.085677581491367e16
+
+DISTANCE_M = (
+    DISTANCE_PC
+    * PC_M
+)
+
+
+# ============================================================
+# SURFACE PARAMETERS
+# ============================================================
+
+SURFACE_RADIUS = 0.5
+
+
+# ============================================================
+# SURFACE BRIGHTNESS KERNEL
+# ============================================================
+
+KERNEL_RADIUS = 2.5
+
+GAUSSIAN_WIDTH = 0.5
+
+
+# ============================================================
+# FIND SNAPSHOTS
+# ============================================================
 
 files = sorted(
     glob.glob(
@@ -36,11 +109,52 @@ files = sorted(
     )
 )
 
+
+print()
 print(
     "Number of snapshots =",
     len(files)
 )
 
+print()
+print(
+    "=============================================="
+)
+
+print(
+    "INTERFEROMETRIC PARAMETERS"
+)
+
+print(
+    "=============================================="
+)
+
+print(
+    "Distance       =",
+    DISTANCE_PC,
+    "pc"
+)
+
+print(
+    "Wavelength     =",
+    WAVELENGTH,
+    "m"
+)
+
+print(
+    "Maximum baseline =",
+    UVMAX_METERS,
+    "m"
+)
+
+print(
+    "=============================================="
+)
+
+
+# ============================================================
+# FIND SURFACE PARTICLES
+# ============================================================
 
 def get_surface(parts):
 
@@ -68,11 +182,20 @@ def get_surface(parts):
         units.kg / units.m**3
     )
 
+    # --------------------------------------------------------
+    # 2-D projected particle positions
+    # --------------------------------------------------------
+
     xy = np.column_stack(
-        (x, y)
+        (
+            x,
+            y
+        )
     )
 
-    tree = cKDTree(xy)
+    tree = cKDTree(
+        xy
+    )
 
     neighbours = tree.query_ball_point(
         xy,
@@ -85,6 +208,13 @@ def get_surface(parts):
         dtype=bool
     )
 
+    # --------------------------------------------------------
+    # Surface determination
+    #
+    # A particle is considered visible if there is no
+    # neighbouring particle located at larger z.
+    # --------------------------------------------------------
+
     for i, ind in enumerate(neighbours):
 
         ind = np.asarray(
@@ -95,9 +225,17 @@ def get_surface(parts):
         if np.any(
             z[ind] > z[i]
         ):
+
             surface[i] = False
 
-    brightness = mass * rho
+    # --------------------------------------------------------
+    # Surface brightness
+    # --------------------------------------------------------
+
+    brightness = (
+        mass
+        * rho
+    )
 
     return (
         x[surface],
@@ -107,6 +245,10 @@ def get_surface(parts):
     )
 
 
+# ============================================================
+# MAKE SURFACE IMAGE
+# ============================================================
+
 def make_surface_image(
     x,
     y,
@@ -115,23 +257,38 @@ def make_surface_image(
 ):
 
     image = np.zeros(
-        (NPIX, NPIX),
+        (
+            NPIX,
+            NPIX
+        ),
         dtype=np.float64
     )
 
     xmin = -RMAX
+
     ymin = -RMAX
 
     pixel_size = (
         2.0 * RMAX
     ) / NPIX
 
+    # --------------------------------------------------------
+    # Add every surface particle
+    # --------------------------------------------------------
+
     for i in range(len(x)):
 
         xi = x[i]
+
         yi = y[i]
+
         hi = h[i]
+
         bi = brightness[i]
+
+        # ----------------------------------------------------
+        # Check finite values
+        # ----------------------------------------------------
 
         if not np.isfinite(xi):
             continue
@@ -148,19 +305,30 @@ def make_surface_image(
         if hi <= 0:
             continue
 
+        # ----------------------------------------------------
+        # Gaussian kernel
+        # ----------------------------------------------------
+
         sigma = (
-            GAUSSIAN_WIDTH * hi
+            GAUSSIAN_WIDTH
+            * hi
         )
 
         radius = (
-            KERNEL_RADIUS * hi
+            KERNEL_RADIUS
+            * hi
         )
 
         radius_pixels = int(
             np.ceil(
-                radius / pixel_size
+                radius
+                / pixel_size
             )
         )
+
+        # ----------------------------------------------------
+        # Particle pixel
+        # ----------------------------------------------------
 
         px = (
             xi - xmin
@@ -171,7 +339,12 @@ def make_surface_image(
         ) / pixel_size
 
         ix = int(px)
+
         iy = int(py)
+
+        # ----------------------------------------------------
+        # Kernel boundaries
+        # ----------------------------------------------------
 
         ix0 = max(
             0,
@@ -199,18 +372,24 @@ def make_surface_image(
         if iy0 > iy1:
             continue
 
+        # ----------------------------------------------------
+        # Physical coordinates of pixels
+        # ----------------------------------------------------
+
         xx = (
             np.arange(
                 ix0,
                 ix1 + 1
-            ) + 0.5
+            )
+            + 0.5
         ) * pixel_size + xmin
 
         yy = (
             np.arange(
                 iy0,
                 iy1 + 1
-            ) + 0.5
+            )
+            + 0.5
         ) * pixel_size + ymin
 
         XX, YY = np.meshgrid(
@@ -218,47 +397,95 @@ def make_surface_image(
             yy
         )
 
+        # ----------------------------------------------------
+        # Distance from particle
+        # ----------------------------------------------------
+
         r2 = (
-            (XX - xi)**2 +
+            (XX - xi)**2
+            +
             (YY - yi)**2
         )
 
+        # ----------------------------------------------------
+        # Gaussian surface kernel
+        # ----------------------------------------------------
+
         kernel = np.exp(
-            -r2 /
-            (2.0 * sigma * sigma)
+            -r2
+            /
+            (
+                2.0
+                * sigma
+                * sigma
+            )
         )
+
+        # ----------------------------------------------------
+        # Add brightness
+        # ----------------------------------------------------
 
         image[
             iy0:iy1 + 1,
             ix0:ix1 + 1
         ] += (
-            bi * kernel
+            bi
+            * kernel
         )
 
-    maximum = np.max(image)
+    # ========================================================
+    # NORMALIZE IMAGE
+    # ========================================================
+
+    maximum = np.max(
+        image
+    )
 
     if maximum > 0:
+
         image /= maximum
 
     return image
 
 
+# ============================================================
+# VISIBILITY
+# ============================================================
+
 def make_visibility(image):
 
+    # ========================================================
+    # FOURIER TRANSFORM
+    # ========================================================
+
     ft = np.fft.fftshift(
-        np.fft.fft2(image)
+        np.fft.fft2(
+            image
+        )
     )
+
+    # ========================================================
+    # ZERO FREQUENCY
+    # ========================================================
 
     center = NPIX // 2
 
     dc = np.abs(
-        ft[center, center]
+        ft[
+            center,
+            center
+        ]
     )
+
+    # ========================================================
+    # NORMALIZED VISIBILITY |V|
+    # ========================================================
 
     if dc > 0:
 
         visibility = (
-            np.abs(ft) / dc
+            np.abs(ft)
+            / dc
         )
 
     else:
@@ -267,7 +494,19 @@ def make_visibility(image):
             ft
         )
 
-    power = visibility**2
+    # --------------------------------------------------------
+    # Numerical protection
+    # --------------------------------------------------------
+
+    visibility = np.clip(
+        visibility,
+        0.0,
+        1.0
+    )
+
+    # ========================================================
+    # FFT SPATIAL FREQUENCY
+    # ========================================================
 
     dx = (
         2.0 * RMAX
@@ -280,26 +519,62 @@ def make_visibility(image):
         )
     )
 
+    # freq units:
+    #
+    # cycles / R_sun
+    #
+    # Convert this to physical baseline:
+    #
+    # B = f * R_sun * lambda / D
+    #
+    # where:
+    #
+    # f      = cycles / R_sun
+    # R_sun  = meters
+    # lambda = observing wavelength
+    # D      = source distance
+
+    baseline_meter = freq * WAVELENGTH * DISTANCE_M / RSUN_M
+
     return (
-        power,
-        freq
+        visibility,
+        freq,
+        baseline_meter
     )
 
+
+# ============================================================
+# PROCESS SNAPSHOTS
+# ============================================================
 
 for i, filename in enumerate(files):
 
     print()
     print(
-        f"Processing snapshot "
-        f"{i+1}/{len(files)}"
+        "=============================================="
     )
 
-    print(filename)
+    print(
+        f"Processing snapshot "
+        f"{i + 1}/{len(files)}"
+    )
+
+    print(
+        filename
+    )
+
+    # ========================================================
+    # READ SNAPSHOT
+    # ========================================================
 
     parts = read_set_from_file(
         filename,
         "amuse"
     )
+
+    # ========================================================
+    # ALL PARTICLES
+    # ========================================================
 
     x_all = parts.x.value_in(
         units.RSun
@@ -313,12 +588,18 @@ for i, filename in enumerate(files):
         units.kg / units.m**3
     )
 
+    # ========================================================
+    # SURFACE PARTICLES
+    # ========================================================
+
     (
         xsurf,
         ysurf,
         hsurf,
         brightness
-    ) = get_surface(parts)
+    ) = get_surface(
+        parts
+    )
 
     print(
         "Total particles =",
@@ -330,6 +611,10 @@ for i, filename in enumerate(files):
         len(xsurf)
     )
 
+    # ========================================================
+    # SURFACE IMAGE
+    # ========================================================
+
     surface_image = make_surface_image(
         xsurf,
         ysurf,
@@ -337,24 +622,59 @@ for i, filename in enumerate(files):
         brightness
     )
 
-    power, freq = make_visibility(
+    # ========================================================
+    # VISIBILITY
+    # ========================================================
+
+    (
+        visibility,
+        freq,
+        baseline_meter
+    ) = make_visibility(
         surface_image
     )
 
+    # ========================================================
+    # UV MASK IN PHYSICAL METERS
+    # ========================================================
+
     uv_mask = (
-        np.abs(freq) <= UVMAX
+        np.abs(
+            baseline_meter
+        )
+        <= UVMAX_METERS
     )
 
-    uv = power[
+    uv = visibility[
         np.ix_(
             uv_mask,
             uv_mask
         )
     ]
 
-    uvfreq = freq[
+    uvbaseline = baseline_meter[
         uv_mask
     ]
+
+    # ========================================================
+    # PRINT BASELINE INFORMATION
+    # ========================================================
+
+    print(
+        "Full FFT baseline range = "
+        f"{baseline_meter[0]:.3f} to "
+        f"{baseline_meter[-1]:.3f} m"
+    )
+
+    print(
+        "Displayed baseline range = "
+        f"{uvbaseline[0]:.3f} to "
+        f"{uvbaseline[-1]:.3f} m"
+    )
+
+    # ========================================================
+    # TIME
+    # ========================================================
 
     filename_only = os.path.basename(
         filename
@@ -376,6 +696,10 @@ for i, filename in enumerate(files):
         time_string
     )
 
+    # ========================================================
+    # FIGURE
+    # ========================================================
+
     fig, (
         ax0,
         ax1,
@@ -383,15 +707,32 @@ for i, filename in enumerate(files):
     ) = plt.subplots(
         1,
         3,
-        figsize=(18, 6),
+        figsize=(19, 6),
         facecolor="black"
     )
 
-    ax0.set_facecolor("black")
-    ax1.set_facecolor("black")
-    ax2.set_facecolor("black")
+    # ========================================================
+    # SAME BACKGROUND
+    # ========================================================
 
-    ax0.scatter(
+    ax0.set_facecolor(
+        "black"
+    )
+
+    ax1.set_facecolor(
+        "black"
+    )
+
+    ax2.set_facecolor(
+        "black"
+    )
+
+    # ========================================================
+    # PANEL 1
+    # ALL SPH PARTICLES
+    # ========================================================
+
+    scatter = ax0.scatter(
         x_all,
         y_all,
         s=1,
@@ -435,7 +776,15 @@ for i, filename in enumerate(files):
     )
 
     for spine in ax0.spines.values():
-        spine.set_color("white")
+
+        spine.set_color(
+            "white"
+        )
+
+    # ========================================================
+    # PANEL 2
+    # PROJECTED SURFACE
+    # ========================================================
 
     ax1.imshow(
         surface_image,
@@ -486,16 +835,24 @@ for i, filename in enumerate(files):
     )
 
     for spine in ax1.spines.values():
-        spine.set_color("white")
 
-    ax2.imshow(
+        spine.set_color(
+            "white"
+        )
+
+    # ========================================================
+    # PANEL 3
+    # PHYSICAL (u,v) BASELINE PLANE
+    # ========================================================
+
+    im_uv = ax2.imshow(
         uv,
         origin="lower",
         extent=[
-            uvfreq[0],
-            uvfreq[-1],
-            uvfreq[0],
-            uvfreq[-1]
+            uvbaseline[0],
+            uvbaseline[-1],
+            uvbaseline[0],
+            uvbaseline[-1]
         ],
         cmap="inferno",
         interpolation="bilinear",
@@ -504,18 +861,22 @@ for i, filename in enumerate(files):
         aspect="equal"
     )
 
+    # --------------------------------------------------------
+    # Baseline axes
+    # --------------------------------------------------------
+
     ax2.set_xlabel(
-        r"$u\ ({\rm cycles}/R_\odot)$",
+        r"$u\ ({\rm m})$",
         color="white"
     )
 
     ax2.set_ylabel(
-        r"$v\ ({\rm cycles}/R_\odot)$",
+        r"$v\ ({\rm m})$",
         color="white"
     )
 
     ax2.set_title(
-        r"Normalized interferometric signal $|V(u,v)|^2$",
+        r"$|V(u,v)|$",
         color="white"
     )
 
@@ -524,16 +885,65 @@ for i, filename in enumerate(files):
     )
 
     for spine in ax2.spines.values():
-        spine.set_color("white")
+
+        spine.set_color(
+            "white"
+        )
+
+    # ========================================================
+    # VISIBILITY COLORBAR
+    # ========================================================
+
+    cbar = fig.colorbar(
+        im_uv,
+        ax=ax2,
+        fraction=0.046,
+        pad=0.04
+    )
+
+    cbar.set_label(
+        r"$|V|$",
+        color="white",
+        fontsize=11
+    )
+
+    cbar.ax.tick_params(
+        colors="white"
+    )
+
+    cbar.outline.set_edgecolor(
+        "white"
+    )
+
+    # ========================================================
+    # FIGURE TITLE
+    # ========================================================
 
     fig.suptitle(
         f"Binary SPH evolution   "
-        f"$t = {time_value}$ s",
+        f"$t = {time_value}$ s   "
+        f"$D = {DISTANCE_PC}$ pc   "
+        f"$\\lambda = {WAVELENGTH*1e9:.0f}$ nm",
         fontsize=15,
         color="white"
     )
 
-    plt.tight_layout()
+    # ========================================================
+    # LAYOUT
+    # ========================================================
+
+    plt.tight_layout(
+        rect=[
+            0,
+            0,
+            1,
+            0.94
+        ]
+    )
+
+    # ========================================================
+    # SAVE
+    # ========================================================
 
     output_file = (
         f"{OUTPUT_DIR}/"
@@ -556,17 +966,25 @@ for i, filename in enumerate(files):
     )
 
 
+# ============================================================
+# FINISHED
+# ============================================================
+
 print()
+
 print(
-    "==================================="
+    "=============================================="
 )
+
 print(
     "All plots saved."
 )
+
 print(
     "Output directory:",
     OUTPUT_DIR
 )
+
 print(
-    "==================================="
+    "=============================================="
 )
