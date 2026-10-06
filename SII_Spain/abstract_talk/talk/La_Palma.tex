@@ -10,6 +10,7 @@
 \definecolor{beamer_color}{RGB}{176,196,222} 
 \begin{document}
 	\maketitle
+	
 	\begin{frame}
 		\centering
 		\vfill
@@ -37,19 +38,17 @@
 
     \begin{frame}{From Point to Extended Source}
     	\begin{columns}[c]
-    		\column{0.65\textwidth}
+    		\column{0.55\textwidth}
     		\begin{itemize}
-    			\item A star is a collection of particles - \textbf{FLUID}.    			
-    			\item Particle's mass in a volume - \textbf{DENSITY}    			
+    			\item A star is a collection of particles - \textbf{FLUID}.   
+    			\item It forms a \textbf{finite, spatially extended source}. 			
+    			\item Particle's mass in a volume - \textbf{DENSITY}.  			
     			\item Density determines the \textbf{pressure} through
-    			the polytropic equation of state
     			\[
     			P = K\rho^\gamma.
     			\]    			
-    			\item It forms a \textbf{finite, spatially extended source}
-    			rather than a point source.
     		\end{itemize}    		
-    		\column{0.35\textwidth}
+    		\column{0.45\textwidth}
     		\begin{figure}
     			\centering
     			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_single/single_star}{1}{31}
@@ -57,7 +56,6 @@
     		\end{figure}
     	\end{columns}
     \end{frame}
-
 
     \begin{frame}
      	\centering
@@ -75,33 +73,60 @@
     	\vfill
     \end{frame}
 
-    \begin{frame}{Equilibrium: The Balancing Force}   	
-    	\begin{columns}[c]    		
-    		\column{0.65\textwidth}    		
+    \begin{frame}{Benefit of SPH}   
+    	\begin{columns}[c]
+    		\column{0.65\textwidth}
     		\begin{itemize}
-    			\item Equilibrium - \textbf{pressure balances gravity}.    			
-    			\item The pressure gradient provides an outward force:
-    			\[
-    			\mathbf{a}_{P}
-    			=-\frac{1}{\rho}\nabla P
-    			\]    			
-    			\item Gravity provides an inward acceleration:
-    			\[
-    			\mathbf{a}_{G}=-\nabla\Phi
-    			\]   			
-    			\item At equilibrium:
-    			\[
-    			\boxed{\mathbf{a}_{P}+\mathbf{a}_{G}=0}
-    			\]
-    		\end{itemize}    		
-    		\column{0.35\textwidth}    		
-    		\centering
-    		\begin{figure}
-    			\centering
-    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_star/frame}{1}{60}
-    			\caption*{\tiny \textbf{Reaching in Equilibrium}}
-    		\end{figure}    		
-    	\end{columns}    	
+    			\item \textbf{Mesh-free method}
+    			\begin{itemize}
+    				\item No fixed grid is required.
+    			\end{itemize}    		
+    			\item \textbf{Lagrangian description}
+    			\begin{itemize}
+    				\item Particles move with the stellar fluid.
+    			\end{itemize}
+    			\item \textbf{Natural stellar surface}
+    			\begin{itemize}
+    				\item The stellar surface can deform naturally.
+    			\end{itemize}
+    			\item \textbf{Complex geometry}
+    			\begin{itemize}
+    				\item Suitable for non-spherical, distorted stars.
+    			\end{itemize}
+    			\item \textbf{Particle-based information}
+    			\begin{itemize}
+    				\item Position, density and velocity are available for evolving surface.
+    			\end{itemize}
+    		\end{itemize}
+    	    \column{0.35\textwidth}
+    	    \begin{figure}
+    	    	\centering
+    	    	\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_rotating_star/rotating_star}{1}{41}
+    	    	\caption*{\tiny \textbf{Projected surface of a rotating star}}
+    	    \end{figure}
+    	\end{columns} 	
+    	
+        \begin{block}{Advantage}
+        	\centering
+        	\textbf{SPH $\rightarrow$ Natural treatment of deformation in Stellar Objects.}
+        \end{block}     	
+    \end{frame}
+
+    \begin{frame}
+    	\centering
+    	\vfill	
+    	{\Large\textbf{How does the SPH Works for each particles?}}	
+    	
+    	\textbf{\textcolor{blue}{SET OF PARTICLES}}	
+    	
+    	\vspace{0.5cm}	
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}    
+    	\hspace{0.15cm}
+    	{\color{red}\textbf{\Large Local Neighbourhood}}
+    	
+    	\hspace{0.15cm}
+    	{\color{blue}\rule{0.25\textwidth}{1.5pt}}	
+    	\vfill
     \end{frame}
 
     \begin{frame}{Local Neighbourhood}
@@ -120,8 +145,8 @@
     			\begin{equation*}
     				\int W(r,h)\,d^3r = 1.
     			\end{equation*}
-      		    \item Particles closer to the point of interest contribute
-    		    \textbf{more strongly}.
+    			\item Particles closer to the point of interest contribute
+    			\textbf{more strongly}.
     		\end{itemize}   		
     		\column{0.35\textwidth}
     		\begin{figure}
@@ -141,7 +166,7 @@
     				\rho_i =
     				\sum_j m_j\,W(\mathbf{r}_i-\mathbf{r}_j,h).
     			\end{equation*}    			   			
-    			\item Pressure differences produce the \textbf{pressure acceleration}:    			
+    			\item Pressure gradient produce the \textbf{hydrodynamic acceleration}:    			
     			\begin{equation*}
     				\mathbf{a}_{i}^{\,\mathrm{P}}
     				=
@@ -174,6 +199,35 @@
     		\end{figure}   		
     	\end{columns}
     \end{frame}
+
+    \begin{frame}{Equilibrium: The Balancing Force}   	
+    	\begin{columns}[c]    		
+    		\column{0.65\textwidth}    		
+    		\begin{itemize}
+    			\item Equilibrium - \textbf{pressure balances gravity}.    			
+    			\item The pressure gradient provides an outward force:
+    			\[
+    			\mathbf{a}_{P}
+    			=-\frac{1}{\rho}\nabla P
+    			\]    			
+    			\item Gravity provides an inward acceleration:
+    			\[
+    			\mathbf{a}_{G}=-\nabla\Phi
+    			\]   			
+    			\item At equilibrium:
+    			\[
+    			\boxed{\mathbf{a}_{P}+\mathbf{a}_{G}=0}
+    			\]
+    		\end{itemize}    		
+    		\column{0.35\textwidth}    		
+    		\centering
+    		\begin{figure}
+    			\centering
+    			\animategraphics[autoplay, loop, width=\linewidth]{5}{fig/frames_star/frame}{1}{60}
+    			\caption*{\tiny \textbf{Reaching in Equilibrium}}
+    		\end{figure}    		
+    	\end{columns}    	
+    \end{frame}    
 
     \begin{frame}{Evolution in Acceleration}	
     	\begin{columns}[c]		
